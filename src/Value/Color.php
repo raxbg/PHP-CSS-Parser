@@ -14,7 +14,7 @@ use Sabberworm\CSS\Parsing\UnexpectedTokenException;
 class Color extends CSSFunction
 {
     /**
-     * @param array<int, RuleValueList|CSSFunction|CSSString|LineName|Size|URL|string> $aColor
+     * @param array<int, Value|string> $aColor
      * @param int $iLineNo
      */
     public function __construct(array $aColor, $iLineNo = 0)
@@ -56,12 +56,19 @@ class Color extends CSSFunction
                         $oParserState->currentLine()
                     ),
                 ];
-            } else {
+            } elseif ($oParserState->strlen($sValue) === 6) {
                 $aColor = [
                     'r' => new Size(intval($sValue[0] . $sValue[1], 16), null, true, $oParserState->currentLine()),
                     'g' => new Size(intval($sValue[2] . $sValue[3], 16), null, true, $oParserState->currentLine()),
                     'b' => new Size(intval($sValue[4] . $sValue[5], 16), null, true, $oParserState->currentLine()),
                 ];
+            } else {
+                throw new UnexpectedTokenException(
+                    'Invalid hex color value',
+                    $sValue,
+                    'custom',
+                    $oParserState->currentLine()
+                );
             }
         } else {
             $sColorMode = $oParserState->parseIdentifier(true);
@@ -118,7 +125,7 @@ class Color extends CSSFunction
     }
 
     /**
-     * @return array<int, RuleValueList|CSSFunction|CSSString|LineName|Size|URL|string>
+     * @return array<int, Value|string>
      */
     public function getColor()
     {
@@ -126,7 +133,7 @@ class Color extends CSSFunction
     }
 
     /**
-     * @param array<int, RuleValueList|CSSFunction|CSSString|LineName|Size|URL|string> $aColor
+     * @param array<int, Value|string> $aColor
      *
      * @return void
      */

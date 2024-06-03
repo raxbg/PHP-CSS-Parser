@@ -35,7 +35,7 @@ use Sabberworm\CSS\Value\URL;
  * @covers \Sabberworm\CSS\Value\Size::parse
  * @covers \Sabberworm\CSS\Value\URL::parse
  */
-class ParserTest extends TestCase
+final class ParserTest extends TestCase
 {
     /**
      * @test
@@ -146,6 +146,8 @@ class ParserTest extends TestCase
                     'l' => new Size(220.0, '%', true, $oColor->getLineNo()),
                     'a' => new Size(0000.3, null, true, $oColor->getLineNo()),
                 ], $oColor->getColor());
+                $aColorRule = $oRuleSet->getRules('outline-color');
+                self::assertEmpty($aColorRule);
             }
         }
         foreach ($oDoc->getAllValues('color') as $sColor) {

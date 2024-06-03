@@ -19,7 +19,7 @@ use Sabberworm\CSS\Settings;
  * @covers \Sabberworm\CSS\Value\Size::parse
  * @covers \Sabberworm\CSS\Value\URL::parse
  */
-class LenientParsingTest extends TestCase
+final class LenientParsingTest extends TestCase
 {
     /**
      * @test
@@ -130,5 +130,27 @@ class LenientParsingTest extends TestCase
             . 'color: hsl(40,40%,30%);font-family: Arial;}',
             $oResult->render()
         );
+    }
+
+    /**
+     * @test
+     */
+    public function invalidColor()
+    {
+        $sFile = __DIR__ . '/../fixtures/invalid-color.css';
+        $oParser = new Parser(file_get_contents($sFile), Settings::create()->withLenientParsing(true));
+        $oParser->parse();
+    }
+
+    /**
+     * @test
+     */
+    public function invalidColorStrict()
+    {
+        $this->expectException(UnexpectedTokenException::class);
+
+        $sFile = __DIR__ . '/../fixtures/invalid-color.css';
+        $oParser = new Parser(file_get_contents($sFile), Settings::create()->beStrict());
+        $oParser->parse();
     }
 }
